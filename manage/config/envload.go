@@ -13,5 +13,5 @@ func EnvLoad()string{
 		log.Fatal("Error loading .env files")
 	}
 
-	return os.Getenv("DB_Mongo_URL")
+	return os.Getenv("Mongo")
 }

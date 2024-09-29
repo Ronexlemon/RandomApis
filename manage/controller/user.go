@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"gomanage/models"
+	"gomanage/response"
 	"net/http"
 	"time"
 
@@ -20,11 +21,16 @@ func SignUp() http.HandlerFunc {
 		err := json.NewDecoder(r.Body).Decode(&user)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
+			response := response.UserResponses{Status: http.StatusBadRequest, Message: "error", Data: map[string]interface{}{"data": err.Error()}}
+			json.NewEncoder(w).Encode(response)
 			return
 		}
+		user.CreatedAt = time.Now()
 		result, err := user.CreateUser(ctx)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
+			response := response.UserResponses{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}}
+			json.NewEncoder(w).Encode(response)
 			return
 		}
 		json.NewEncoder(w).Encode(result)
@@ -42,11 +48,15 @@ func Login() http.HandlerFunc {
 		err := json.NewDecoder(r.Body).Decode(&user)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
+			response := response.UserResponses{Status: http.StatusBadRequest, Message: "error", Data: map[string]interface{}{"data": err.Error()}}
+			json.NewEncoder(w).Encode(response)
 			return
 		}
 		result, err := user.Login(ctx, user.Email, user.Password)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
+			response := response.UserResponses{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}}
+			json.NewEncoder(w).Encode(response)
 			return
 		}
 		json.NewEncoder(w).Encode(result)
@@ -66,6 +76,8 @@ func Profile() http.HandlerFunc {
 		result, err := user.Profile(ctx, user_id)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
+			response := response.UserResponses{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}}
+			json.NewEncoder(w).Encode(response)
 			return
 		}
 		json.NewEncoder(w).Encode(result)

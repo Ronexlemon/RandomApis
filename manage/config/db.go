@@ -2,6 +2,7 @@ package config
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 
@@ -9,28 +10,31 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type ServerClient struct{
+type ServerClient struct {
 	MongoDB *mongo.Client
 }
 
-func NewClient()*mongo.Client{
+func NewClient() *mongo.Client {
 	//create context for only 10 seconds
-	ctx,cancel := context.WithTimeout(context.Background(),time.Second *10)
-	defer  cancel()
+	
 	client,err := mongo.NewClient(options.Client().ApplyURI(EnvLoad()))
 	if err !=nil{
-		log.Fatal("Failed to create a client")
+		log.Fatal(err)
 	}
-	//ping client
-	err = client.Ping(ctx,nil)
-	if err !=nil{
-		log.Fatal("Failed to ping the client")
-		}
+	ctx,_:=context.WithTimeout(context.Background(),time.Second *10) // give it 10 second to connect
+	err = client.Connect(ctx)
+	if err != nil {
+		log.Fatal(err)}
+		//ping the database
+		err = client.Ping(ctx,nil)
+		if err != nil {
+			log.Fatal(err)}
+			fmt.Println("Connected to db")
 
-		return client
+			return client
 }
 
-func Collection(client *mongo.Client,collectionName string)*mongo.Collection{
-	collection := client.Database("Databse").Collection(collectionName)
+func Collection(client *mongo.Client, collectionName string) *mongo.Collection {
+	collection := client.Database("Manage").Collection(collectionName)
 	return collection
 }
