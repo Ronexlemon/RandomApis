@@ -33,10 +33,9 @@ func (u *User) CreateUser(ctx context.Context)(*mongo.InsertOneResult,error){
 
 }
 
-func (u *User) Login(ctx context.Context,email string)(*User,error){
+func (u *User) Login(ctx context.Context,email string,password string)(*User,error){
 	var user User
-	ctx ,cancel := context.WithCancel(ctx)
-	defer cancel()
+	
     err := collection.FindOne(ctx,bson.M{"email":email}).Decode(&user)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
@@ -49,8 +48,7 @@ func (u *User) Login(ctx context.Context,email string)(*User,error){
 //getUserProfile
 func (u *User) Profile(ctx  context.Context,user_id primitive.ObjectID)(*User,error){
 	var user User
-	ctx ,cancel := context.WithCancel(ctx)
-	defer cancel()
+	
 	err:= collection.FindOne(ctx,bson.M{"_id":user_id}).Decode(&user)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
