@@ -1,3 +1,7 @@
 go 1.21.3
 
-use ./Groceries
+use (
+	./Groceries
+	./Task
+	./manage
+)
