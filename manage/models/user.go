@@ -42,3 +42,15 @@ func (u *User) Login(ctx context.Context,email string)(*User,error){
 		return &user,nil
 
 }
+//getUserProfile
+func (u *User) Profile(ctx  context.Context,user_id primitive.ObjectID)(*User,error){
+	var user User
+	err:= collection.FindOne(ctx,bson.M{"_id":user_id}).Decode(&user)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, errors.New("user Profile found")
+			}
+			return nil,err
+			}
+			return &user,nil
+}
