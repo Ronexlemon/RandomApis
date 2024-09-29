@@ -1,10 +1,14 @@
 package routes
 
-import "github.com/gorilla/mux"
+import (
+	"gomanage/controller"
+
+	"github.com/gorilla/mux"
+)
 
 
 func UserRouter(router *mux.Router){
-	//router.HandleFunc("/users", login()).Methods("POST")
-	//router.HandleFunc("/users", signUp()).Methods("POST")
-	//router.HandleFunc("/users", profile()).Methods("GET")
+	router.HandleFunc("/users", controller.Login()).Methods("GET")
+	router.HandleFunc("/users", controller.SignUp()).Methods("POST")
+	router.HandleFunc("/users", controller.Profile()).Methods("GET")
 }
