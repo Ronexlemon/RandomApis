@@ -26,6 +26,11 @@ func TaskCreate() http.HandlerFunc {
 			json.NewEncoder(w).Encode(response)
 			return
 		}
+		task.Task_id = primitive.NewObjectID()
+		task.CreatedAt = time.Now()
+		task.UpdatedAt = time.Now()
+		task.Status =  models.Pending
+		
 		result, err := task.Create(ctx)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -84,6 +89,7 @@ func TaskUpdate() http.HandlerFunc {
 			json.NewEncoder(w).Encode(response)
 			return
 		}
+		
 		result, err := task.Update(ctx, user_id)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)

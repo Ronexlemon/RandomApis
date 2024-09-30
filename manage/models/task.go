@@ -13,11 +13,18 @@ import (
 )
 
 type TaskStatus string
+type TaskPriority string
 
 const (
 	Pending   TaskStatus = "Pending"
 	Completed TaskStatus = "Completed"
 	Failed    TaskStatus = "In-progress"
+)
+
+const (
+	Low   TaskPriority = "Low"
+	Medium TaskPriority = "Medium"
+	High    TaskPriority = "High"
 )
 
 type Task struct {
@@ -26,7 +33,7 @@ type Task struct {
 	Description string             `json:"description"`
 	Status      TaskStatus         `json:"status"` // pending, in-progress, completed
 	DueDate     time.Time          `json:"due_date"`
-	Priority    string             `json:"priority"` // low, medium, high
+	Priority    TaskPriority           `json:"priority"` // low, medium, high
 	User        primitive.ObjectID `json:"user_id"`  // User ID
 
 	CreatedAt time.Time `json:"created_at"`
@@ -48,7 +55,7 @@ func (t *Task) Create(ctx context.Context) (*mongo.InsertOneResult, error) {
 // get userTasks
 func (t *Task) UserTasks(ctx context.Context, user_id primitive.ObjectID) ([]Task,error) {
 	var tasks []Task
-	result, err := TaskCollection.Find(ctx, bson.M{"user_id": user_id}, options.Find().SetSort(bson.D{{Key: "created_at", Value: 1}}))
+	result, err := TaskCollection.Find(ctx, bson.M{"user": user_id}, options.Find().SetSort(bson.D{{Key: "created_at", Value: 1}}))
 	if err != nil {
 		return nil,err
 	}

@@ -3,6 +3,7 @@ package models
 import (
 	"context"
 	"errors"
+	"fmt"
 	"gomanage/config"
 	"time"
 
@@ -21,17 +22,30 @@ type User struct {
 }
 
 var collection *mongo.Collection = config.Collection(config.NewClient(),"users")
-func (u *User) CreateUser(ctx context.Context)(*mongo.InsertOneResult,error){
-	ctx ,cancel := context.WithCancel(ctx)
-	defer cancel()
-	result,err := collection.InsertOne(ctx,u)
-	if err !=nil{
-		return nil,err
-	}
-	return result,nil
+func (u *User) CreateUser(ctx context.Context) (*mongo.InsertOneResult, error) {
+    // Check if the email already exists
+    var existingUser User
+    err := collection.FindOne(ctx, bson.M{"email": u.Email}).Decode(&existingUser)
+    
+    if err == nil {
+        // If no error, it means a user with this email already exists
+        return nil, fmt.Errorf("user already exists")
+    } else if err != mongo.ErrNoDocuments {
+        // If it's not the "no documents" error, return the actual error
+        return nil, err
+    }
 
+    // If no existing user found, proceed with the insertion
+    ctx, cancel := context.WithCancel(ctx)
+    defer cancel()
 
+    result, err := collection.InsertOne(ctx, u)
+    if err != nil {
+        return nil, err
+    }
+    return result, nil
 }
+
 
 func (u *User) Login(ctx context.Context,email string,password string)(*User,error){
 	var user User

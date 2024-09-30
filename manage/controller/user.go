@@ -26,6 +26,10 @@ func SignUp() http.HandlerFunc {
 			return
 		}
 		user.CreatedAt = time.Now()
+		user.UserID = primitive.NewObjectID()
+		user.CreatedAt = time.Now()
+		
+
 		result, err := user.CreateUser(ctx)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
