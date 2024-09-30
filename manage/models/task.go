@@ -46,17 +46,17 @@ func (t *Task) Create(ctx context.Context) (*mongo.InsertOneResult, error) {
 }
 
 // get userTasks
-func (t *Task) UserTasks(ctx context.Context, user_id primitive.ObjectID) []Task {
+func (t *Task) UserTasks(ctx context.Context, user_id primitive.ObjectID) ([]Task,error) {
 	var tasks []Task
 	result, err := TaskCollection.Find(ctx, bson.M{"user_id": user_id}, options.Find().SetSort(bson.D{{Key: "created_at", Value: 1}}))
 	if err != nil {
-		return nil
+		return nil,err
 	}
 	err = result.All(ctx, &tasks)
 	if err != nil {
-		return nil
+		return nil,err
 	}
-	return tasks
+	return tasks,nil
 }
 
 // update a task
