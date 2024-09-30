@@ -14,6 +14,7 @@ func main(){
 	//router
 	router := router.NewRouter()
 	routes.UserRouter(router)
+	routes.TaskRouter(router)
 	config.NewClient()
 	fmt.Println("Listening to port",port)
 	log.Fatal(http.ListenAndServe(port,router))
