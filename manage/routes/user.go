@@ -12,3 +12,4 @@ func UserRouter(router *mux.Router){
 	router.HandleFunc("/users", controller.SignUp()).Methods("POST")
 	router.HandleFunc("/users/{id}", controller.Profile()).Methods("GET")
 }
+

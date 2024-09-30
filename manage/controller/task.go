@@ -12,7 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func Create() http.HandlerFunc {
+func TaskCreate() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
@@ -39,7 +39,7 @@ func Create() http.HandlerFunc {
 }
 
 // get all user tasks
-func UserTasks() http.HandlerFunc {
+func TaskUserTasks() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("content-Type", "application/json")
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
@@ -64,7 +64,7 @@ func UserTasks() http.HandlerFunc {
 }
 
 // update
-func Update() http.HandlerFunc {
+func TaskUpdate() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("content-Type", "application/json")
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
@@ -97,7 +97,7 @@ func Update() http.HandlerFunc {
 }
 
 // delete
-func Delete() http.HandlerFunc {
+func TaskDelete() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("content-Type", "application/json")
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
