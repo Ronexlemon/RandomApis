@@ -13,7 +13,7 @@ type Status string
 
 const (
 	StatusActive   Status = "active"
-	StatusInactive Status = "Approved"
+	StatusApproved Status = "Approved"
 	StatusPending  Status = "pending"
 	StatusRejected Status = "rejected"
 )
@@ -33,7 +33,7 @@ type Quest struct {
 var questCollection = config.QuestCollection(config.DbConnect(), "quests")
 
 func (q *Quest) Create(ctx context.Context) (*mongo.InsertOneResult, error) {
-	
+
 	result, err := questCollection.InsertOne(ctx, q)
 	if err != nil {
 		return nil, err
@@ -43,16 +43,69 @@ func (q *Quest) Create(ctx context.Context) (*mongo.InsertOneResult, error) {
 
 }
 
-
-func (q *Quest) Quests(ctx context.Context)([]Quest,error){
+func (q *Quest) Quests(ctx context.Context) ([]Quest, error) {
 	var quest []Quest
 	cur, err := questCollection.Find(ctx, bson.M{})
 	if err != nil {
-		return nil,err}
-		err = cur.All(ctx,&quest)
-		if err != nil {
-			return nil,err
-			}
-			return quest,nil
+		return nil, err
+	}
+	err = cur.All(ctx, &quest)
+	if err != nil {
+		return nil, err
+	}
+	return quest, nil
 
 }
+
+func (q *Quest) ActiveQuests(ctx context.Context) ([]Quest, error) {
+	var quest []Quest
+	cur, err := questCollection.Find(ctx, bson.M{"status": StatusActive})
+	if err != nil {
+		return nil, err
+	}
+	err = cur.All(ctx, &quest)
+	if err != nil {
+		return nil, err
+	}
+	return quest, nil
+}
+
+func (q *Quest) ApprovedQuests(ctx context.Context) ([]Quest, error) {
+	var quest []Quest
+	cur, err := questCollection.Find(ctx, bson.M{"status": StatusApproved})
+	if err != nil {
+		return nil, err
+	}
+	err = cur.All(ctx, &quest)
+	if err != nil {
+		return nil, err
+	}
+	return quest, nil
+}
+
+func (q *Quest) Pendinguests(ctx context.Context) ([]Quest, error) {
+	var quest []Quest
+	cur, err := questCollection.Find(ctx, bson.M{"status": StatusPending})
+	if err != nil {
+		return nil, err
+	}
+	err = cur.All(ctx, &quest)
+	if err != nil {
+		return nil, err
+	}
+	return quest, nil
+}
+
+func (q *Quest) RejectedQuests(ctx context.Context) ([]Quest, error) {
+	var quest []Quest
+	cur, err := questCollection.Find(ctx, bson.M{"status": StatusActive})
+	if err != nil {
+		return nil, err
+	}
+	err = cur.All(ctx, &quest)
+	if err != nil {
+		return nil, err
+	}
+	return quest, nil
+}
+
