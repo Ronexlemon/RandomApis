@@ -1,6 +1,13 @@
 package model
 
-import "go.mongodb.org/mongo-driver/bson/primitive"
+import (
+	"context"
+	"gojobquest/config"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
+)
 
 type Status string
 
@@ -21,4 +28,31 @@ type Quest struct {
 	Status     Status             `json:"status" bson:"status"`
 	ReqMoney   int64              `json:"req_money" bson:"req_money"`
 	ReqTime    int64              `json:"req_time" bson:"req_time"`
+}
+
+var questCollection = config.QuestCollection(config.DbConnect(), "quests")
+
+func (q *Quest) Create(ctx context.Context) (*mongo.InsertOneResult, error) {
+	
+	result, err := questCollection.InsertOne(ctx, q)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+
+}
+
+
+func (q *Quest) Quests(ctx context.Context)([]Quest,error){
+	var quest []Quest
+	cur, err := questCollection.Find(ctx, bson.M{})
+	if err != nil {
+		return nil,err}
+		err = cur.All(ctx,&quest)
+		if err != nil {
+			return nil,err
+			}
+			return quest,nil
+
 }
