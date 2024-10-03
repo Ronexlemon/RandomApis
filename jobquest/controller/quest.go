@@ -32,16 +32,18 @@ func Quests() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		var quest model.Quest
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+		defer cancel()
 
-		err := json.NewDecoder(r.Body).Decode(&quest)
+		result, err := quest.Quests(ctx)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			response := response.Response{Status: http.StatusBadRequest, Message: "error", Data: map[string]interface{}{"data": err.Error()}}
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			response := response.Response{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}}
 			json.NewEncoder(w).Encode(response)
 			return
 		}
+		json.NewEncoder(w).Encode(result)
 
-		//post the data
 
 	}
 }
