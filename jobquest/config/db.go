@@ -29,3 +29,9 @@ func DbConnect() *mongo.Client {
 	return client
 
 }
+
+
+func QuestCollection( client *mongo.Client, collectionName string)*mongo.Collection{
+	collection:= client.Database("Quest").Collection(collectionName)
+	return collection
+}
