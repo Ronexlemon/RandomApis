@@ -7,9 +7,9 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func LoadEnv()string{
-	err:= godotenv.Load("MONGODB_URL")
-	if err !=nil{
+func LoadEnv() string {
+	err := godotenv.Load()
+	if err != nil {
 		log.Fatal("Unable to load ENV Variables")
 	}
 	return os.Getenv("MONGODB_URL")

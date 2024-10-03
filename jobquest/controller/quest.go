@@ -8,13 +8,16 @@ import (
 	"gojobquest/model"
 	"gojobquest/response"
 	"net/http"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func QuestCreate() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		var quest model.Quest
-
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+		defer cancel()
 		err := json.NewDecoder(r.Body).Decode(&quest)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
@@ -22,8 +25,15 @@ func QuestCreate() http.HandlerFunc {
 			json.NewEncoder(w).Encode(response)
 			return
 		}
-
-		//post the data
+quest.Status = model.StatusPending
+quest.ID = primitive.NewObjectID()
+		result,err := quest.Create(ctx)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			response := response.Response{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}}
+			json.NewEncoder(w).Encode(response)
+			return}
+			json.NewEncoder(w).Encode(result)
 
 	}
 }
