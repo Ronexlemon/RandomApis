@@ -108,4 +108,3 @@ func (q *Quest) RejectedQuests(ctx context.Context) ([]Quest, error) {
 	}
 	return quest, nil
 }
-
