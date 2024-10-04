@@ -35,3 +35,8 @@ func QuestCollection( client *mongo.Client, collectionName string)*mongo.Collect
 	collection:= client.Database("Quest").Collection(collectionName)
 	return collection
 }
+
+func QuestCollection2( client *mongo.Client, collectionName string)*mongo.Collection{
+	collection:= client.Database("Quest").Collection(collectionName)
+	return collection
+}
